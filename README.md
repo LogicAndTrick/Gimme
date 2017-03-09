@@ -1,6 +1,11 @@
 # Gimme
 Gimme is an asyncronous resource loader for .NET
 
+Nuget Package: [LogicAndTrick.Gimme](https://www.nuget.org/packages/LogicAndTrick.Gimme)
+```
+Install-Package LogicAndTrick.Gimme
+```
+
 ## What's it do?
 It's a very simple abstraction over resource providers. Conforming to an interface forces you to design your resource loaders in a particular way. Gimme prioritises asyncronous loading over everything else. Basically it's going to make it hard for you to do it the wrong way.
 
@@ -32,7 +37,7 @@ public class ExampleResourceProvider : SyncResourceProvider<string>
 
 Next, tell Gimme about your resource provider. At application startup, register your providers:
 
-```
+```csharp
 Gimme.Register(new ExampleResourceProvider());
 // ... and any others
 ```
@@ -44,7 +49,7 @@ Finally, request the resource. There are a few ways to do this:
 - `Task<T> Gimme.FetchOne<T>(string)` - Request ONE item from a resource as a task and discard any others
 
 This simple example will print the numbers 0-9 from our provider to the console (as long as you wait for the task to complete):
-```
+```csharp
 var task = Gimme.Fetch<string>("Example", r => {
     Console.WriteLine(r);
 });
