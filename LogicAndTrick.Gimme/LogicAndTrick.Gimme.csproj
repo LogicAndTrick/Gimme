@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.4</TargetFramework>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Daniel Walder</Authors>
+    <Company>LogicAndtrick</Company>
+    <Description>Gimme is a simple asyncronous resource provider.</Description>
+    <Copyright>2017 Daniel Walder</Copyright>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/LogicAndTrick/Gimme</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/LogicAndTrick/Gimme</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>resource provider async</PackageTags>
+    <PackageReleaseNotes>First release</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard1.4\LogicAndTrick.Gimme.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard1.4\LogicAndTrick.Gimme.xml</DocumentationFile>
+  </PropertyGroup>
+
+</Project>
