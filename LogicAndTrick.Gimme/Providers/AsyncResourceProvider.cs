@@ -1,5 +1,6 @@
 ﻿using LogicAndTrick.Gimme.Observables;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LogicAndTrick.Gimme.Providers
@@ -39,19 +40,21 @@ namespace LogicAndTrick.Gimme.Providers
         /// Fetch the given resource with an async callback
         /// </summary>
         /// <param name="location">The resource location</param>
+        /// <param name="resources">The list of resources to fetch</param>
         /// <param name="callback">The callback to use when each item is loaded</param>
         /// <returns>A task that will complete when all items in the resource are loaded</returns>
-        public abstract Task Fetch(string location, Action<T> callback);
+        public abstract Task Fetch(string location, List<string> resources, Action<T> callback);
 
         /// <summary>
         /// Fetch the given resource as an observable collection
         /// </summary>
         /// <param name="location">The resource location</param>
+        /// <param name="resources">The list of resources to fetch</param>
         /// <returns>An observable collection that will publish the loaded resource</returns>
-        public IObservable<T> Fetch(string location)
+        public IObservable<T> Fetch(string location, List<string> resources)
         {
             var wrapper = new ObservableCollection<T>();
-            Fetch(location, wrapper.Add).ContinueWith(t => wrapper.Done());
+            Fetch(location, resources, wrapper.Add).ContinueWith(t => wrapper.Done());
             return wrapper;
         }
     }

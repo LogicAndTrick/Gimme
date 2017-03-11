@@ -12,7 +12,8 @@ namespace LogicAndTrick.Gimme.Providers
         /// Synchronously loads the given resource as an enumerable
         /// </summary>
         /// <param name="location">The resource location</param>
+        /// <param name="resources">The list of resources to fetch</param>
         /// <returns>An enumerable list</returns>
-        IEnumerable<T> Fetch(string location);
+        IEnumerable<T> Fetch(string location, List<string> resources);
     }
 }

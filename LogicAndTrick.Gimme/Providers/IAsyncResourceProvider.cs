@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace LogicAndTrick.Gimme.Providers
@@ -13,8 +14,9 @@ namespace LogicAndTrick.Gimme.Providers
         /// Fetch the given resource with an async callback
         /// </summary>
         /// <param name="location">The resource location</param>
+        /// <param name="resources">The list of resources to fetch</param>
         /// <param name="callback">The callback to use when each item is loaded</param>
         /// <returns>A task that will complete when all items in the resource are loaded</returns>
-        Task Fetch(string location, Action<T> callback);
+        Task Fetch(string location, List<string> resources, Action<T> callback);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace LogicAndTrick.Gimme.Providers
 {
@@ -12,7 +13,8 @@ namespace LogicAndTrick.Gimme.Providers
         /// Fetch the given resource as an observable collection
         /// </summary>
         /// <param name="location">The resource location</param>
+        /// <param name="resources">The list of resources to fetch</param>
         /// <returns>An observable collection that will publish the loaded resource</returns>
-        IObservable<T> Fetch(string location);
+        IObservable<T> Fetch(string location, List<string> resources);
     }
 }

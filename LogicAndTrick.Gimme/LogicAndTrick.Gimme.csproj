@@ -12,7 +12,8 @@
     <RepositoryUrl>https://github.com/LogicAndTrick/Gimme</RepositoryUrl>
     <RepositoryType>Git</RepositoryType>
     <PackageTags>resource provider async</PackageTags>
-    <PackageReleaseNotes>First release</PackageReleaseNotes>
+    <PackageReleaseNotes>Added support to pass a list of resource names to a provider</PackageReleaseNotes>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

@@ -16,7 +16,7 @@ namespace LogicAndTrick.Gimme.Demo
             Gimme.Register(new ObservableResourceProvider());
 
             int done = 0;
-            var ob = Gimme.Fetch<Thing>("Async.RESOURCE");
+            var ob = Gimme.Fetch<Thing>("Async", new List<string> { "Resource 1", "Resource 2", "Resource 3", "Resource 4", "Resource 5" });
 
             ob.Subscribe(x => Console.WriteLine(x.Text), () => done++);
 
@@ -35,13 +35,13 @@ namespace LogicAndTrick.Gimme.Demo
             return location.StartsWith("Sync");
         }
 
-        public override IEnumerable<Thing> Fetch(string location)
+        public override IEnumerable<Thing> Fetch(string location, List<string> resources)
         {
             var r = new Random();
-            foreach (var c in location)
+            foreach (var res in resources)
             {
                 System.Threading.Thread.Sleep(r.Next(100, 1000));
-                yield return new Thing { Text = c.ToString() };
+                yield return new Thing { Text = res };
             }
         }
     }
@@ -53,15 +53,15 @@ namespace LogicAndTrick.Gimme.Demo
             return location.StartsWith("Async");
         }
 
-        public override Task Fetch(string location, Action<Thing> callback)
+        public override Task Fetch(string location, List<string> resources, Action<Thing> callback)
         {
             return Task.Factory.StartNew(() =>
             {
                 var r = new Random();
-                foreach (var c in location)
+                foreach (var res in resources)
                 {
                     System.Threading.Thread.Sleep(r.Next(100, 1000));
-                    callback(new Thing { Text = c.ToString() });
+                    callback(new Thing { Text = res });
                 }
             });
         }
@@ -74,17 +74,17 @@ namespace LogicAndTrick.Gimme.Demo
             return location.StartsWith("Observable");
         }
 
-        public override IObservable<Thing> Fetch(string location)
+        public override IObservable<Thing> Fetch(string location, List<string> resources)
         {
             return Observable.Create<Thing>(o =>
             {
                 var r = new Random();
                 Task.Factory.StartNew(() =>
                 {
-                    foreach (var c in location)
+                    foreach (var res in resources)
                     {
                         System.Threading.Thread.Sleep(r.Next(100, 1000));
-                        o.OnNext(new Thing { Text = c.ToString() });
+                        o.OnNext(new Thing { Text = res });
                     }
                     o.OnCompleted();
                 });

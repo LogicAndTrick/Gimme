@@ -10,7 +10,7 @@
         /// Returns true if this resource provider can provide for the given location
         /// </summary>
         /// <param name="location">The location details</param>
-        /// <returns>True if this handler can provide the given resource</returns>
+        /// <returns>True if this handler can provide data from the given resource</returns>
         bool CanProvide(string location);
 
         /// <summary>

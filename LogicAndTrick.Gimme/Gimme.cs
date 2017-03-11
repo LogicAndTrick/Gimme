@@ -17,12 +17,12 @@ namespace LogicAndTrick.Gimme
         /// Fetch a single resource asyncronously and return it as a task.
         /// Be warned that ALL resources will be requested anyway, only the first result will be used.
         /// </summary>
-        public static Task<T> FetchOne<T>(string location) where T : class
+        public static Task<T> FetchOne<T>(string location, string resource) where T : class
         {
             var tcs = new TaskCompletionSource<T>();
 
             bool done = false;
-            Fetch<T>(location, t => {
+            Fetch<T>(location, new List<string> { resource }, t => {
                 if (done) return;
                 tcs.SetResult(t);
                 done = true;
@@ -34,17 +34,17 @@ namespace LogicAndTrick.Gimme
         /// <summary>
         /// Fetch a list of resources from a single location and call a callback on each one
         /// </summary>
-        public static Task Fetch<T>(string location, Action<T> callback) where T : class
+        public static Task Fetch<T>(string location, List<string> resources, Action<T> callback) where T : class
         {
-            return GetAsyncProvider<T>(location).Fetch(location, callback);
+            return GetAsyncProvider<T>(location).Fetch(location, resources, callback);
         }
 
         /// <summary>
         /// Fetch a list of resources from a single location as an observable collection
         /// </summary>
-        public static IObservable<T> Fetch<T>(string location) where T : class
+        public static IObservable<T> Fetch<T>(string location, List<string> resources) where T : class
         {
-            return GetObservableProvider<T>(location).Fetch(location);
+            return GetObservableProvider<T>(location).Fetch(location, resources);
         }
 
         /// <summary>
