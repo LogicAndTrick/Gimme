@@ -16,11 +16,18 @@ namespace LogicAndTrick.Gimme.Demo
             Gimme.Register(new ObservableResourceProvider());
 
             int done = 0;
-            var ob = Gimme.Fetch<Thing>("Async", new List<string> { "Resource 1", "Resource 2", "Resource 3", "Resource 4", "Resource 5" });
+            //var ob = Gimme.Fetch<Thing>("Resource", new List<string> { "Resource 1", "Resource 2", "Resource 3", "Resource 4", "Resource 5" });
 
-            ob.Subscribe(x => Console.WriteLine(x.Text), () => done++);
+            //ob.Subscribe(x => Console.WriteLine(x.Text), () => done++);
 
-            while (done < 1)
+            var empty = Gimme.Fetch<Thing>("Invalid", null);
+            empty.Subscribe(x => Console.WriteLine("this shouldn't happen"), () =>
+            {
+                Console.WriteLine("Empty subscription worked.");
+                done++;
+            });
+
+            while (done < 2)
             {
                 System.Threading.Thread.Sleep(500);
                 Console.WriteLine("Doing some processing...");
@@ -32,7 +39,7 @@ namespace LogicAndTrick.Gimme.Demo
     {
         public override bool CanProvide(string location)
         {
-            return location.StartsWith("Sync");
+            return location.StartsWith("Resource");
         }
 
         public override IEnumerable<Thing> Fetch(string location, List<string> resources)
@@ -41,7 +48,7 @@ namespace LogicAndTrick.Gimme.Demo
             foreach (var res in resources)
             {
                 System.Threading.Thread.Sleep(r.Next(100, 1000));
-                yield return new Thing { Text = res };
+                yield return new Thing { Text = res + " from sync" };
             }
         }
     }
@@ -50,7 +57,7 @@ namespace LogicAndTrick.Gimme.Demo
     {
         public override bool CanProvide(string location)
         {
-            return location.StartsWith("Async");
+            return location.StartsWith("Resource");
         }
 
         public override Task Fetch(string location, List<string> resources, Action<Thing> callback)
@@ -61,7 +68,7 @@ namespace LogicAndTrick.Gimme.Demo
                 foreach (var res in resources)
                 {
                     System.Threading.Thread.Sleep(r.Next(100, 1000));
-                    callback(new Thing { Text = res });
+                    callback(new Thing { Text = res + " from async" });
                 }
             });
         }
@@ -71,7 +78,7 @@ namespace LogicAndTrick.Gimme.Demo
     {
         public override bool CanProvide(string location)
         {
-            return location.StartsWith("Observable");
+            return location.StartsWith("Resource");
         }
 
         public override IObservable<Thing> Fetch(string location, List<string> resources)
@@ -84,7 +91,7 @@ namespace LogicAndTrick.Gimme.Demo
                     foreach (var res in resources)
                     {
                         System.Threading.Thread.Sleep(r.Next(100, 1000));
-                        o.OnNext(new Thing { Text = res });
+                        o.OnNext(new Thing { Text = res + " from observable" });
                     }
                     o.OnCompleted();
                 });

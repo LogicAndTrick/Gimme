@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicAndTrick.Gimme", "Logi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicAndTrick.Gimme.Demo", "LogicAndTrick.Gimme.Demo\LogicAndTrick.Gimme.Demo.csproj", "{C35E85CD-0072-45BB-B041-34C14042271C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogicAndTrick.Gimme.Tests", "LogicAndTrick.Gimme.Tests\LogicAndTrick.Gimme.Tests.csproj", "{0906830C-5BB7-4345-AEFE-0212D04C21E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{C35E85CD-0072-45BB-B041-34C14042271C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C35E85CD-0072-45BB-B041-34C14042271C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C35E85CD-0072-45BB-B041-34C14042271C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0906830C-5BB7-4345-AEFE-0212D04C21E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0906830C-5BB7-4345-AEFE-0212D04C21E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0906830C-5BB7-4345-AEFE-0212D04C21E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0906830C-5BB7-4345-AEFE-0212D04C21E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

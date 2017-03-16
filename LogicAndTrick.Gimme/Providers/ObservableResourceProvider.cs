@@ -55,6 +55,7 @@ namespace LogicAndTrick.Gimme.Providers
             var tcs = new TaskCompletionSource<object>();
             IObservable<T> ob = this.Fetch(location, resources);
             ob.Subscribe(new Subscriber(tcs, callback));
+            tcs.Task.ConfigureAwait(false);
             return tcs.Task;
         }
 

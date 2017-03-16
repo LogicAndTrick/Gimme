@@ -1,6 +1,6 @@
-﻿using LogicAndTrick.Gimme.Observables;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace LogicAndTrick.Gimme.Providers
@@ -53,7 +53,7 @@ namespace LogicAndTrick.Gimme.Providers
         /// <returns>A task that will complete when all items in the resource are loaded</returns>
         public Task Fetch(string location, List<string> resources, Action<T> callback)
         {
-            return Task.Factory.StartNew(() =>
+            var result = Task.Factory.StartNew(() =>
             {
                 foreach (var t in Fetch(location, resources))
                 {
@@ -67,6 +67,8 @@ namespace LogicAndTrick.Gimme.Providers
                     }
                 }
             });
+            result.ConfigureAwait(false);
+            return result;
         }
 
         /// <summary>
@@ -77,9 +79,11 @@ namespace LogicAndTrick.Gimme.Providers
         /// <returns>An observable collection that will publish the loaded resource</returns>
         IObservable<T> IObservableResourceProvider<T>.Fetch(string location, List<string> resources)
         {
-            var wrapper = new ObservableCollection<T>();
-            Fetch(location, resources, wrapper.Add).ContinueWith(t => wrapper.Done());
-            return wrapper;
+            return Observable.Create(new Func<IObserver<T>, Task>(async observer =>
+            {
+                await Fetch(location, resources, observer.OnNext);
+                observer.OnCompleted();
+            }));
         }
     }
 }

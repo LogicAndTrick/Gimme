@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using LogicAndTrick.Gimme.Providers;
+using System.Reactive.Linq;
 
 namespace LogicAndTrick.Gimme
 {
@@ -21,11 +22,10 @@ namespace LogicAndTrick.Gimme
         {
             var tcs = new TaskCompletionSource<T>();
 
-            bool done = false;
             Fetch<T>(location, new List<string> { resource }, t => {
-                if (done) return;
-                tcs.SetResult(t);
-                done = true;
+                tcs.TrySetResult(t);
+            }).ContinueWith(x => {
+                tcs.TrySetResult(default(T));
             });
 
             return tcs.Task;
@@ -36,7 +36,10 @@ namespace LogicAndTrick.Gimme
         /// </summary>
         public static Task Fetch<T>(string location, List<string> resources, Action<T> callback) where T : class
         {
-            return GetAsyncProvider<T>(location).Fetch(location, resources, callback);
+            var tasks = GetAsyncProviders<T>(location).Select(x => x.Fetch(location, resources, callback)).ToArray();
+            var result = tasks.Length == 0 ? Task.FromResult(0) : Task.WhenAll(tasks);
+            result.ConfigureAwait(false);
+            return result;
         }
 
         /// <summary>
@@ -44,7 +47,7 @@ namespace LogicAndTrick.Gimme
         /// </summary>
         public static IObservable<T> Fetch<T>(string location, List<string> resources) where T : class
         {
-            return GetObservableProvider<T>(location).Fetch(location, resources);
+            return GetObservableProviders<T>(location).Select(x => x.Fetch(location, resources)).Merge();
         }
 
         /// <summary>
@@ -54,9 +57,9 @@ namespace LogicAndTrick.Gimme
         /// <param name="location">The location to load</param>
         /// <returns>The first async provider that can load the given resource</returns>
         /// <exception cref="InvalidOperationException">If a provider couldn't be located</exception>
-        public static IAsyncResourceProvider<T> GetAsyncProvider<T>(string location) where T : class
+        public static IEnumerable<IAsyncResourceProvider<T>> GetAsyncProviders<T>(string location) where T : class
         {
-            return _providers.OfType<IResourceProvider<T>>().First(x => x.CanProvide(location)).ToAsyncResourceProvider();
+            return _providers.OfType<IResourceProvider<T>>().Where(x => x.CanProvide(location)).Select(x => x.ToAsyncResourceProvider());
         }
 
         /// <summary>
@@ -66,9 +69,9 @@ namespace LogicAndTrick.Gimme
         /// <param name="location">The location to load</param>
         /// <returns>The first observable provider that can load the given resource</returns>
         /// <exception cref="InvalidOperationException">If a provider couldn't be located</exception>
-        public static IObservableResourceProvider<T> GetObservableProvider<T>(string location) where T : class
+        public static IEnumerable<IObservableResourceProvider<T>> GetObservableProviders<T>(string location) where T : class
         {
-            return _providers.OfType<IResourceProvider<T>>().First(x => x.CanProvide(location)).ToObservableResourceProvider();
+            return _providers.OfType<IResourceProvider<T>>().Where(x => x.CanProvide(location)).Select(x => x.ToObservableResourceProvider());
         }
 
         /// <summary>
@@ -79,6 +82,16 @@ namespace LogicAndTrick.Gimme
         public static void Register<T>(IResourceProvider<T> provider) where T : class
         {
             _providers.Add(provider);
+        }
+
+        public static void Unregister<T>(IResourceProvider<T> provider) where T: class
+        {
+            _providers.Remove(provider);
+        }
+
+        public static void UnregisterAll()
+        {
+            _providers.Clear();
         }
     }
 }
